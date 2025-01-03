@@ -1,25 +1,31 @@
 const mysql = require('mysql2');
+require('dotenv').config(); // dotenv 로드
 
 // MySQL 연결 설정
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  password: process.env.DB_PASS,
   database: process.env.DB_NAME,
+  multipleStatements: true, // 다중 쿼리 실행 허용
+  connectionLimit: 100,      // 최대 10개의 연결 유지
 });
 
+
 // 데이터베이스와 테이블 생성
-const createDatabaseAndTable = `
-  CREATE DATABASE IF NOT EXISTS users;
+const createDatabase = `CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME};`;
+
+const createTables = `
   USE my_database;
 
   CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    kakao VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
     nickname VARCHAR(100),
     email VARCHAR(100),
     introduce VARCHAR(255),
-    picture_path VARCHAR(255) NOTNULL,
+    picture_path VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -51,11 +57,24 @@ const createDatabaseAndTable = `
 `;
 
 // 쿼리 실행
-connection.query(createDatabaseAndTable, (err, results) => {
+// 데이터베이스 생성
+pool.query(createDatabase, (err) => {
   if (err) {
-    console.error('Error creating database or table:', err.message);
+    console.error('Error creating database:', err.message);
+    pool.end();
     return;
   }
-  console.log('Database and table created successfully!');
-  connection.end();
+  console.log('Database created successfully.');
+
+  // 테이블 생성
+  pool.query(createTables, (err) => {
+    if (err) {
+      console.error('Error creating tables:', err.message);
+    } else {
+      console.log('Tables created successfully.');
+    }
+    pool.end();
+  });
 });
+
+module.exports = pool; //모듈내보내기
