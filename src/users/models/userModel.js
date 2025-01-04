@@ -1,19 +1,22 @@
 const pool = require('../../config/create_db');
 require('dotenv').config();
 
-async function saveUser(userInfo) {
-    console.log('Saving user info:', userInfo);
-    const { id, properties, kakao_account } = userInfo;
-    const nickname = properties?.nickname || null;
-
+// 사용자 정보 업데이트
+async function updateUser(kakaoId, data) {
     const query = `
-        INSERT INTO users (kakao_id, name, nickname, email, picture_path)
-        VALUES (?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE
-        name = VALUES(name)
+        UPDATE users
+        SET name = ?, email = ?, updated_at = CURRENT_TIMESTAMP
+        WHERE kakao_id = ?
     `;
-
-    await pool.query(query, [id, nickname, nickname, 'default@kaist.ac.kr', 'default_path']);
+    const [result] = await pool.query(query, [data.name, data.email, kakaoId]);
+    return result;
 }
 
-module.exports = { saveUser };
+// 카카오 ID로 사용자 정보 가져오기 (선택)
+async function getUserByKakaoId(kakaoId) {
+    const query = 'SELECT * FROM users WHERE kakao_id = ?';
+    const [rows] = await pool.query(query, [kakaoId]);
+    return rows[0]; // 결과가 없으면 undefined 반환
+}
+
+module.exports = { updateUser, getUserByKakaoId };
