@@ -5,11 +5,11 @@ require('dotenv').config();
 async function updateUser(kakao_id, data) {
     const query = `
         UPDATE users
-        SET nickname = ?, email = ?, introduce = ?, 
+        SET name = ?, nickname = ?, introduce = ?, 
         created_at = CURRENT_TIMESTAMP
         WHERE kakao_id = ?
     `;
-    const [result] = await pool.query(query, [data.name, data.email, kakao_id]);
+    const [result] = await pool.query(query, [data.name, data.nickname, data.introduce, kakao_id]);
     return result;
 }
 
