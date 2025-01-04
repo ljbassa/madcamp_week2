@@ -1,6 +1,6 @@
 const express = require('express');
 require('dotenv').config();
-const { updateUser, getAllUsers, getUserByKakaoId, deleteUserById } = require('../controllers/userController');
+const { updateUser, getUserByKakaoId, deleteUserById } = require('../controllers/userController');
 const router = express.Router();
 
 // 사용자 kakao_id에 따라 PATCH
@@ -10,7 +10,7 @@ router.patch('/:kakao_id', updateUser)
 //router.patch('/:kakao_id/image', updateImage)
 
 // 모든 사용자 가져오기
-router.get('/', getAllUsers);
+//router.get('/', getAllUsers);
 
 // 특정 사용자 가져오기
 router.get('/:kakao_id', getUserByKakaoId);

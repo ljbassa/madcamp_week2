@@ -1,21 +1,9 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { updateUser, getUserByKakaoId } = require('../models/userModel');
+const { updateUser, getUserBykakao_id } = require('../models/userModel');
 require('dotenv').config();
 
-
-// 모든 사용자 가져오기
-exports.getAllUsers = async (req, res) => {
-    try {
-        const [rows] = await pool.query('SELECT * FROM users');
-        res.json({ success: true, data: rows });
-    } catch (error) {
-        console.error('Error fetching users:', error.message);
-        res.status(500).json({ success: false, message: 'Failed to fetch users.' });
-    }
-};
-
 // 특정 사용자 가져오기
-exports.getUserByKakaoId = async (req, res) => {
+exports.getUserBykakao_id = async (req, res) => {
     const { kakao_id } = req.params;
     try {
         const [rows] = await pool.query('SELECT * FROM users WHERE kakao_id = ?', [kakao_id]);
@@ -48,10 +36,10 @@ exports.deleteUserById = async (req, res) => {
 
 // 사용자 정보 업데이트
 exports.updateUser = async (req, res) => {
-    const { kakaoId } = req.params;
+    const { kakao_id } = req.params;
     const { nickname, email, introduce } = req.body;
 
-    if (!kakaoId) {
+    if (!kakao_id) {
         return res.status(400).json({ success: false, message: 'Kakao ID is required.' });
     }
 
@@ -60,13 +48,13 @@ exports.updateUser = async (req, res) => {
     }
 
     try {
-        const user = await getUserByKakaoId(kakaoId);
+        const user = await getUserBykakao_id(kakao_id);
 
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
 
-        await updateUser(kakaoId, { nickname, email, introduce });
+        await updateUser(kakao_id, { nickname, email, introduce });
         res.json({ success: true, message: 'User updated successfully.' });
     } catch (error) {
         console.error('Error updating user:', error.message);
