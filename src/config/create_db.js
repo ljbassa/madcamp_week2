@@ -20,12 +20,12 @@ const createTables = `
 
   CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    kakao VARCHAR(100) NOT NULL,
+    kakao_id VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
     nickname VARCHAR(100),
     email VARCHAR(100),
     introduce VARCHAR(255),
-    picture_path VARCHAR(255) NOT NULL,
+    picture_path VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 

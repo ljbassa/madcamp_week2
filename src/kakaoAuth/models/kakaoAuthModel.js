@@ -1,21 +1,19 @@
 const pool = require('../../config/create_db');
+require('dotenv').config();
 
 async function saveUser(userInfo) {
+    console.log('Saving user info:', userInfo);
     const { id, properties, kakao_account } = userInfo;
     const nickname = properties?.nickname || null;
-    const profileImage = properties?.profile_image || null;
-    const email = kakao_account?.email || null;
 
     const query = `
-        INSERT INTO users (kakao_id, nickname, profile_image, email)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO users (kakao_id, name, nickname, email, picture_path)
+        VALUES (?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
-        nickname = VALUES(nickname),
-        profile_image = VALUES(profile_image),
-        email = VALUES(email)
+        name = VALUES(name),
     `;
 
-    await pool.query(query, [id, nickname, profileImage, email]);
+    await pool.query(query, [id, nickname, nickname, ElementInternals, 'default_path']);
 }
 
 module.exports = { saveUser };

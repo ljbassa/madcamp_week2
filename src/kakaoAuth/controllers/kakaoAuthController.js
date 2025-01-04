@@ -1,18 +1,28 @@
 const { getToken, getUserInfo } = require('../services/kakaoAuthService');
 const { saveUser } = require('../models/kakaoAuthModel');
+require('dotenv').config();
 
 async function handleKakaoCallback(req, res) {
-    try {
-        const code = req.query.code;
-        const tokenData = await getToken(code); // 카카오 API로 액세스 토큰 요청
-        const userInfo = await getUserInfo(tokenData.access_token); // 사용자 정보 요청
-        await saveUser(userInfo); // 사용자 정보 저장
+    const code = req.query.code;
 
-        res.json({ success: true, user: userInfo });
-    } catch (error) {
-        console.error('Kakao login error:', error);
-        res.status(500).json({ success: false, message: 'Authentication failed' });
+    if (!code) {
+        console.error('Authorization code is missing');
+        return res.status(400).send('Authorization code is missing');
     }
-}
 
+    console.log('Authorization code:', code);
+
+    try {
+        const tokenData = await getToken(code);
+        console.log('Token data:', tokenData);
+
+        const userInfo = await getUserInfo(tokenData.access_token);
+        console.log('User info:', userInfo);
+
+        res.json(userInfo);
+    } catch (err) {
+        console.error('Error during Kakao login:', err.message);
+        res.status(500).send('Kakao login failed');
+    }
+};
 module.exports = { handleKakaoCallback };

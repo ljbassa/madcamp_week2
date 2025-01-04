@@ -1,5 +1,6 @@
 const express = require('express');
 const { kakaoAuthRoutes } = require('./src/kakaoAuth');
+require('dotenv').config();
 
 const app = express();
 
@@ -7,7 +8,7 @@ const app = express();
 app.use('/auth/kakao', kakaoAuthRoutes);
 
 //사용자 관리
-app.use('/users', userRoutes);
+//app.use('/users', userRoutes);
 
 app.listen(3000, () => {
     console.log('Server running on http://localhost:3000');
