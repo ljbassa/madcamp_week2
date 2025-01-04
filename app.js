@@ -26,5 +26,5 @@ app.use('/users', userRoutes);
 app.use('/home', homeRoutes);
 
 app.listen(process.env.PORT, () => {
-    console.log('Server running on http://localhost:3001');
+    console.log('Server running on http://localhost:3000');
 });
