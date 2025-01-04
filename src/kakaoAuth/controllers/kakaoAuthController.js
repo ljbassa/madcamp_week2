@@ -19,7 +19,11 @@ async function handleKakaoCallback(req, res) {
         const userInfo = await getUserInfo(tokenData.access_token);
         console.log('User info:', userInfo);
 
-        res.json(userInfo);
+        res.json({
+            accessToken: tokenData.access_token,
+            refreshToken: tokenData.refresh_token,
+            expiresIn: tokenData.expires_in,
+            userInfo});
     } catch (err) {
         console.error('Error during Kakao login:', err.message);
         res.status(500).send('Kakao login failed');
