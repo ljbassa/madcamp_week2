@@ -1,6 +1,6 @@
 const express = require('express');
 const { kakaoAuthRoutes } = require('./src/kakaoAuth');
-const homeRoutes = require('./src/home/homeRoutes');
+const homeRoutes = require('./src/home/routes/homeRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -12,7 +12,7 @@ app.use(express.json());
 app.use('/auth/kakao', kakaoAuthRoutes);
 
 //사용자 관리
-app.use('/users', userRoutes);
+//app.use('/users', userRoutes);
 
 //홈 탭 ???
 app.use('/home', homeRoutes);
