@@ -9,7 +9,7 @@ const app = express();
 
 // CORS 설정
 app.use(cors({
-    origin: 'http://localhost:3000', // 허용할 클라이언트의 출처
+    origin: 'http://localhost:3001', // 허용할 클라이언트의 출처
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // 허용할 HTTP 메서드
     credentials: true, // 쿠키 인증 정보 허용
 }));
@@ -26,5 +26,5 @@ app.use('/users', userRoutes);
 app.use('/home', homeRoutes);
 
 app.listen(process.env.PORT, () => {
-    console.log('Server running on http://localhost:3000');
+    console.log('Server running on http://localhost:3001');
 });

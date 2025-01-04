@@ -26,6 +26,7 @@ async function initializeDatabase() {
       email VARCHAR(100),
       introduce VARCHAR(255),
       picture_path VARCHAR(255),
+      refresh_token VARCHAR(255), -- 리프레시 토큰
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 

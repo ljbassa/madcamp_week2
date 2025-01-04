@@ -1,9 +1,9 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { updateUser, getUserBykakao_id } = require('../models/userModel');
+const { updateUser, getUserBykakaoId, invalidateRefreshToken } = require('../models/userModel');
 require('dotenv').config();
 
 // 특정 사용자 가져오기
-exports.getUserBykakao_id = async (req, res) => {
+exports.getUserByKakaoId = async (req, res) => {
     const { kakao_id } = req.params;
     try {
         const [rows] = await pool.query('SELECT * FROM users WHERE kakao_id = ?', [kakao_id]);
@@ -17,8 +17,10 @@ exports.getUserBykakao_id = async (req, res) => {
     }
 };
 
+
+
 // 사용자 삭제
-exports.deleteUserById = async (req, res) => {
+exports.deleteUserByKakaoId = async (req, res) => {
     const { kakao_id } = req.params;
     try {
         const [result] = await pool.query('DELETE FROM users WHERE kakao_id = ?', [id]);
@@ -48,7 +50,7 @@ exports.updateUser = async (req, res) => {
     }
 
     try {
-        const user = await getUserBykakao_id(kakao_id);
+        const user = await getUserBykakaoId(kakao_id);
 
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found.' });
@@ -59,5 +61,27 @@ exports.updateUser = async (req, res) => {
     } catch (error) {
         console.error('Error updating user:', error.message);
         res.status(500).json({ success: false, message: 'Failed to update user.' });
+    }
+};
+
+exports.logout = async (req, res) => {
+    const { kakao_id } = req.params;
+
+    if (!kakao_id) {
+        return res.status(400).json({ success: false, message: 'Kakao ID is required.' });
+    }
+
+    try {
+        // 리프레시 토큰 무효화
+        const result = await invalidateRefreshToken(kakao_id);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'User not found.' });
+        }
+
+        res.json({ success: true, message: 'Logout successful.' });
+    } catch (error) {
+        console.error('Error during logout:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to logout.' });
     }
 };

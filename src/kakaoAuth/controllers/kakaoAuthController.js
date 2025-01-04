@@ -1,5 +1,6 @@
 const { getToken, getUserInfo } = require('../services/kakaoAuthService');
 const { saveUser } = require('../models/kakaoAuthModel');
+const { saveRefreshToken } = require('../../users/models/userModel');
 require('dotenv').config();
 
 async function handleKakaoCallback(req, res) {
@@ -21,6 +22,10 @@ async function handleKakaoCallback(req, res) {
 
         const userInfo = await getUserInfo(tokenData.access_token);
         console.log('User info:', userInfo);
+        
+        await saveUser(userInfo);
+
+        await saveRefreshToken(userInfo.id, tokenData.refresh_token);
 
         res.json({
             accessToken: tokenData.access_token,
@@ -29,7 +34,6 @@ async function handleKakaoCallback(req, res) {
             userInfo,
         });
 
-        saveUser(userInfo)
     } catch (err) {
         console.error('Error during Kakao login:', err.message);
         res.status(500).send('Kakao login failed');
