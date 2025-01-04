@@ -10,10 +10,10 @@ async function saveUser(userInfo) {
         INSERT INTO users (kakao_id, name, nickname, email, picture_path)
         VALUES (?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE
-        name = VALUES(name),
+        name = VALUES(name)
     `;
 
-    await pool.query(query, [id, nickname, nickname, ElementInternals, 'default_path']);
+    await pool.query(query, [id, nickname, nickname, 'default@kaist.ac.kr', 'default_path']);
 }
 
 module.exports = { saveUser };
