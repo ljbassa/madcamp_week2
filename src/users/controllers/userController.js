@@ -33,7 +33,7 @@ exports.getUserByKakaoId = async (req, res) => {
 exports.deleteUserById = async (req, res) => {
     const { kakao_id } = req.params;
     try {
-        const [result] = await pool.query('DELETE FROM users WHERE id = ?', [id]);
+        const [result] = await pool.query('DELETE FROM users WHERE kakao_id = ?', [id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }

@@ -7,7 +7,7 @@ const router = express.Router();
 router.patch('/:kakao_id', updateUser)
 
 // 사용자 사진 연결 - 미구현
-//router.patch('/image', updateImage)
+//router.patch('/:kakao_id/image', updateImage)
 
 // 모든 사용자 가져오기
 router.get('/', getAllUsers);
@@ -16,6 +16,6 @@ router.get('/', getAllUsers);
 router.get('/:kakao_id', getUserByKakaoId);
 
 // 사용자 삭제
-//outer.delete('/:id', deleteUserById);
+router.delete('/:kakao_id', deleteUserById);
 
 module.exports = router;
