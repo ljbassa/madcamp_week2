@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { kakaoAuthRoutes } = require('./src/kakaoAuth');
+const kakaoAuthRoutes = require('./src/kakaoAuth/routes/kakaoAuthRoutes');
 const homeRoutes = require('./src/home/routes/homeRoutes');
 const userRoutes = require('./src/users/routes/userRoutes')
 require('dotenv').config();

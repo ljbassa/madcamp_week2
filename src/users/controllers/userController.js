@@ -1,5 +1,6 @@
 const pool = require('../../config/create_db'); // MySQL 연결
 const { updateUser, getUserByKakaoId } = require('../models/userModel');
+require('dotenv').config();
 
 
 // 모든 사용자 가져오기
@@ -17,7 +18,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserByKakaoId = async (req, res) => {
     const { kakao_id } = req.params;
     try {
-        const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [kakao_id]);
+        const [rows] = await pool.query('SELECT * FROM users WHERE kakao_id = ?', [kakao_id]);
         if (rows.length === 0) {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
