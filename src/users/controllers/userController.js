@@ -48,13 +48,13 @@ exports.deleteUserById = async (req, res) => {
 // 사용자 정보 업데이트
 exports.updateUser = async (req, res) => {
     const { kakaoId } = req.params;
-    const { nickname, email } = req.body;
+    const { nickname, email, introduce } = req.body;
 
     if (!kakaoId) {
         return res.status(400).json({ success: false, message: 'Kakao ID is required.' });
     }
 
-    if (!nickname && !email) {
+    if (!nickname && !email && !introduce) {
         return res.status(400).json({ success: false, message: 'At least one field (nickname or email) is required.' });
     }
 
@@ -65,7 +65,7 @@ exports.updateUser = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
 
-        await updateUser(kakaoId, { nickname, email });
+        await updateUser(kakaoId, { nickname, email, introduce });
         res.json({ success: true, message: 'User updated successfully.' });
     } catch (error) {
         console.error('Error updating user:', error.message);
