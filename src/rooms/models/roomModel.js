@@ -25,12 +25,12 @@ async function createRoom(name, names) {
             FROM users
             WHERE name IN (${placeholders})
         `;
+
         try {
             // 쿼리 실행
             const [rows] = await pool.query(query, names);
             // 결과에서 kakao_id만 추출하여 배열로 반환
             const kakao_ids = rows.map(row => row.kakao_id);
-            return kakao_ids;
         } catch (error) {
             console.error('Error fetching kakao_ids:', error);
             throw error;
