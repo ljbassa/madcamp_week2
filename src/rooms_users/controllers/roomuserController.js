@@ -107,3 +107,23 @@ exports.updateVote = async (req, res) => {
     }
 };
 
+// 방에 멤버 추가 초대
+exports.inviteUser = async (req, res) => {
+    const { room_id } = req.params;
+    const { names } = req.body;
+
+    if ( names.length == 0 ) {
+        return res.status(400).json({ success: false, message: 'At least one name is required.' });
+    }
+
+    try {
+        await inviteUser(room_id, {names});
+        console.log('update members:', {names})
+
+        res.json({ success: true, message: 'invited successfully.' });
+    } catch (error) {
+        console.error('Error updating member:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to inviting.' });
+    }
+};
+

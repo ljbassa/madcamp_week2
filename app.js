@@ -33,5 +33,5 @@ app.use('/rooms_users', roomuserRoutes)
 app.use('/notifications', notificationRoutes)
 
 app.listen(process.env.PORT, () => {
-    console.log('Server running on http://localhost:3001');
+    console.log('Server running on http://localhost:3000');
 });

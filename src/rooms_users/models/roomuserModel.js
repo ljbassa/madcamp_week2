@@ -38,26 +38,39 @@ async function updateVote(room_id, user_id, data) {
 }
 
 // 방 생성
-async function inviteUser(name, kakao_ids) {
+async function inviteUser(room_id, names) {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
 
-        // 1. room create
-        const insertRoomQuery = `
-            INSERT INTO rooms_users (name) VALUES (?)
+        // 1. names -> kakao_ids 로 변환
+        // 동적으로 생성된 IN 절에 사용할 자리표시자 생성
+        const placeholders = names.map(() => '?').join(', ');
+
+        // SQL 쿼리 작성
+        const query = `
+            SELECT name, kakao_id
+            FROM users
+            WHERE name IN (${placeholders})
         `;
-        const [roomResult] = await connection.query(insertRoomQuery, [name]);
-        const roomId = roomResult.insertId;
-        console.log('room created with ID: ${roomId}');
+
+        try {
+            // 쿼리 실행
+            const [rows] = await pool.query(query, names);
+            // 결과에서 kakao_id만 추출하여 배열로 반환
+            const kakao_ids = rows.map(row => row.kakao_id);
+        } catch (error) {
+            console.error('Error fetching kakao_ids:', error);
+            throw error;
+        }
 
         // 2. rooms에 users 삽입
         const insertRoomUsersQuery = `
             INSERT INTO rooms_users (room_id, user_id) VALUES ?
         `;
-        const roomUserValues = kakao_ids.map(kakaoId => [roomId, kakaoId]);
+        const roomUserValues = kakao_ids.map(kakaoId => [room_id, kakaoId]);
         await connection.query(insertRoomUsersQuery, [roomUserValues]);
-        console.log(`Inserted ${kakao_ids.length} users into room ${roomId}`);
+        console.log(`Inserted ${kakao_ids.length} users into room ${room_id}`);
 
         // 3. notifications에 삽입
             // 1. 해당 데이터 존재 여부 확인
@@ -65,7 +78,7 @@ async function inviteUser(name, kakao_ids) {
             SELECT id FROM notifications
             WHERE room_id = ? AND user_id = ?
         `;
-        const [rows] = await connection.query(checkQuery, [roomId, kakaoId]);
+        const [rows] = await connection.query(checkQuery, [room_id, kakaoId]);
 
         if (rows.length > 0) {
             // 데이터가 존재하면 업데이트
@@ -82,12 +95,12 @@ async function inviteUser(name, kakao_ids) {
                 INSERT INTO notifications (room_id, user_id)
                 VALUES (?, ?)
             `;
-            const [insertResult] = await connection.query(insertQuery, [roomId, kakaoId]);
+            const [insertResult] = await connection.query(insertQuery, [room_id, kakaoId]);
             console.log(`Inserted notification ID: ${insertResult.insertId}`);
         }
 
         await connection.commit();
-        return { roomId, kakao_ids };
+        return { room_id, kakao_ids };
 
     } catch (error) {
         await connection.rollback();
