@@ -13,7 +13,7 @@ exports.createRoom = async (req, res) => {
 
     try {
         // 방 생성
-        const { roomId, names } = await createRoom(name, names);
+        const { roomId, kakao_ids } = await createRoom(name, names);
 
         // 생성된 방 정보 조회
         const room = await getRoomById(roomId);
