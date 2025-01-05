@@ -4,7 +4,7 @@ const kakaoAuthRoutes = require('./src/kakaoAuth/routes/kakaoAuthRoutes');
 const userRoutes = require('./src/users/routes/userRoutes')
 const roomRoutes = require('./src/rooms/routes/roomRoutes')
 const roomuserRoutes = require('./src/rooms_users/routes/roomuserRoutes')
-const roomRoutes = require('./src/notifications/routes/notificationRoutes')
+const notificationRoutes = require('./src/notifications/routes/notificationRoutes')
 
 require('dotenv').config();
 
