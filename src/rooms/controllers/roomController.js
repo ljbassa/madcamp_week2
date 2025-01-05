@@ -11,6 +11,10 @@ exports.createRoom = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Room name is required.' });
     }
 
+    if (!Array.isArray(names) || names.length === 0) {
+        return res.status(400).json({ success: false, message: 'User names are required.' });
+    }
+
     try {
         // 방 생성
         const { roomId, kakao_ids } = await createRoom(name, names);

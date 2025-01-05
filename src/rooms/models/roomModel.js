@@ -6,6 +6,10 @@ async function createRoom(name, names) {
     const connection = await pool.getConnection();
     let kakao_ids = [];
 
+    if (names.length === 0) {
+        throw new Error('No user names provided for room creation.');
+    }
+
     try {
         await connection.beginTransaction();
 
