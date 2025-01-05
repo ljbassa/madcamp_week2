@@ -1,14 +1,29 @@
 const express = require('express');
 require('dotenv').config();
-const { createRoom, deleteUserRoomById } = require('../controllers/roomuserController');
+const { exitRoomUser, viewUserRooms, viewRoom, updateMenu, updateQuiz, updateVote, inviteUser } = require('../controllers/roomuserController');
 const router = express.Router();
 
 
-// 방 생성
-router.post('/', createRoom)
+// 회원 별 방 나가기
+router.delete('/:room_id/:user_id', exitRoomUser)
 
-// 사용자 삭제
-router.delete('/:room_id/:kakao_id', deleteUserRoomById);
+// 회원 별 방 전체 목록
+router.get('/home1/:user_id', viewUserRooms)
+
+// 방 세부 목록
+router.get('/home2/:room_id', viewRoom)
+
+// 회원 별 메뉴, 한 줄 어필 작성
+router.patch('/menu/:room_id/user_id', updateMenu)
+
+// 회원 별 퀴즈 정답 유무
+router.patch('/quiz/:room_id/user_id', updateQuiz)
+
+// 회원 별 방 투표 현황
+router.patch('/vote/:room_id/:user_id', updateVote)
+
+// 방 멤버 초대
+router.post('/invite/:room_id', inviteUser);
 
 
 

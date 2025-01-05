@@ -1,68 +1,108 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { deleteUserRoomById, getRoomById } = require('../models/roomuserModel');
+const { updateMenu, updateQuiz, updateVote, inviteUser } = require('../models/roomuserModel');
 require('dotenv').config();
 
-// 방 삭제
-exports.deleteUserRoomById = async (req, res) => {
-    const { room_id, kakao_id } = req.params;
-    const connection = await pool.getConnection();
+// 사용자 삭제
+exports.exitRoomUser = async (req, res) => {
+    const { room_id, user_id } = req.params;
+    try {
+        const [result] = await pool.query('DELETE FROM rooms_users WHERE room_id = ? AND user_id = ?', [room_id, user_id]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'RoomUser not found.' });
+        }
+        res.json({ success: true, message: 'RoomUser deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting roomuser:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to delete roomuser.' });
+    }
+};
+
+// 회원 별 방 전체 목록
+exports.viewUserRooms = async (req, res) => {
+    const { user_id } = req.params;
+    try {
+        const [rows] = await pool.query('SELECT * FROM rooms_users WHERE user_id = ?', [user_id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'RoomUser not found.' });
+        }
+        res.json({ success: true, data: rows });
+    } catch (error) {
+        console.error('Error fetching roomuser:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch roomuser.' });
+    }
+};
+
+// 각 방 조회
+exports.viewRoom = async (req, res) => {
+    const { room_id } = req.params;
+    try {
+        const [rows] = await pool.query('SELECT * FROM rooms_users WHERE room_id = ?', [room_id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'RoomUser not found.' });
+        }
+        res.json({ success: true, data: rows });
+    } catch (error) {
+        console.error('Error fetching roomuser:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch roomuser.' });
+    }
+};
+
+// 회원 별 메뉴, 한 줄 어필 작성
+exports.updateMenu = async (req, res) => {
+    const { room_id, user_id } = req.params;
+    const { menu, appeal } = req.body;
+
+    if (!menu && !appeal ) {
+        return res.status(400).json({ success: false, message: 'At least one field (menu or appeal) is required.' });
+    }
 
     try {
-        await connection.beginTransaction();
+        await updateMenu(room_id, user_id, {menu, appeal});
+        console.log('update menu:', {menu, appeal})
 
-
-        // 1. rooms_users에서 room_id 삭제
-        const deleteRoomUsersQuery = `
-            DELETE FROM rooms_users
-            WHERE room_id = ?
-        `;
-        const [deleteRoomUsersResult] = await connection.query(deleteRoomUsersQuery, [room_id]);
-        console.log(`Deleted ${deleteRoomUsersResult.affectedRows} rooms from rooms_users`);
-
-        // 2. notifications에서 room_id 삭제
-        const deleteNotificationQuery = `
-            DELETE FROM notifications
-            WHERE room_id = ? AND user_id = ?
-        `;
-        const [deleteNotificationResult] = await connection.query(deleteNotificationQuery, [room_id, kakao_id]);
-        console.log(`Deleted ${deleteNotificationResult.affectedRows} rooms from notifications`);
-
-        // 2. rooms_users에 room_id가 더 이상 없는지 확인
-        const checkRoomUsersQuery = `
-            SELECT COUNT(*) AS count
-            FROM rooms_users
-            WHERE room_id = ?
-        `;
-        const [checkRoomUsersResult] = await connection.query(checkRoomUsersQuery, [room_id]);
-        const remainingUsers = checkRoomUsersResult[0].count;
-
-        // 3. rooms_users에 room_id가 없으면 rooms에서 삭제
-        if (remainingUsers === 0) {
-            const deleteRoomQuery = `
-                DELETE FROM rooms
-                WHERE id = ?
-            `;
-            const [deleteRoomResult] = await connection.query(deleteRoomQuery, [room_id]);
-            console.log(`Deleted ${deleteRoomResult.affectedRows} rooms from rooms`);
-        } else {
-            console.log(`Room ${room_id} still has associated users in room_users.`);
-        }
-
-        // 트랜잭션 커밋
-        await connection.commit();
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ success: false, message: 'User not found.' });
-        }
-        res.json({ success: true, message: 'User deleted successfully.' });
-
-        return { success: true, message: 'Room and associated users deleted if applicable.' };
-        
+        res.json({ success: true, message: 'menu and appeal updated successfully.' });
     } catch (error) {
-        await connection.commit();
-        console.error('Error deleting rooms:', error.message);
-        throw error;
-    } finally {
-        connection.release();
+        console.error('Error updating menu:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to update menu.' });
+    }
+};
+
+// 회원 별 메뉴, 한 줄 어필 작성
+exports.updateQuiz = async (req, res) => {
+    const { room_id, user_id } = req.params;
+    const { quiz } = req.body;
+
+    if (!menu && !appeal ) {
+        return res.status(400).json({ success: false, message: 'At least one field quiz is required.' });
+    }
+
+    try {
+        await updateMenu(room_id, user_id, {quiz});
+        console.log('update quiz:', {quiz})
+
+        res.json({ success: true, message: 'quiz updated successfully.' });
+    } catch (error) {
+        console.error('Error updating quiz:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to update quiz.' });
+    }
+};
+
+// 회원 별 메뉴, 한 줄 어필 작성
+exports.updateVote = async (req, res) => {
+    const { room_id, user_id } = req.params;
+    const { menu, appeal } = req.body;
+
+    if (!menu && !appeal ) {
+        return res.status(400).json({ success: false, message: 'At least one field (menu or appeal) is required.' });
+    }
+
+    try {
+        await updateMenu(room_id, user_id, {vote});
+        console.log('update vote:', {vote})
+
+        res.json({ success: true, message: 'vote updated successfully.' });
+    } catch (error) {
+        console.error('Error updating vote:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to update vote.' });
     }
 };
