@@ -27,7 +27,7 @@ app.use('/users', userRoutes);
 //홈 탭 ???
 app.use('/home', homeRoutes);
 //room 관리
-app.use('/rooms', romeRoutes)
+app.use('/rooms', roomRoutes)
 
 app.listen(process.env.PORT, () => {
     console.log('Server running on http://localhost:3000');

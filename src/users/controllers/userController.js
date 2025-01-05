@@ -1,6 +1,7 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { updateUser, getUserBykakaoId, invalidateRefreshToken } = require('../models/userModel');
+const { updateUser, getUserByKakaoId, invalidateRefreshToken } = require('../models/userModel');
 require('dotenv').config();
+
 
 // 특정 사용자 가져오기
 exports.getUserByKakaoId = async (req, res) => {
@@ -23,7 +24,7 @@ exports.getUserByKakaoId = async (req, res) => {
 exports.deleteUserByKakaoId = async (req, res) => {
     const { kakao_id } = req.params;
     try {
-        const [result] = await pool.query('DELETE FROM users WHERE kakao_id = ?', [id]);
+        const [result] = await pool.query('DELETE FROM users WHERE kakao_id = ?', [kakao_id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, message: 'User not found.' });
         }
@@ -45,12 +46,13 @@ exports.updateUser = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Kakao ID is required.' });
     }
 
-    if (!nickname && !email && !introduce) {
+    if (!name && !nickname && !introduce) {
         return res.status(400).json({ success: false, message: 'At least one field (nickname or email) is required.' });
     }
 
     try {
-        const user = await getUserBykakaoId(kakao_id);
+        const user = await getUserByKakaoId(kakao_id);
+        console.log('useruseruser:', {user, kakao_id})
 
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found.' });
