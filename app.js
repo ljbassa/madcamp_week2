@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const kakaoAuthRoutes = require('./src/kakaoAuth/routes/kakaoAuthRoutes');
-const homeRoutes = require('./src/home/routes/homeRoutes');
 const userRoutes = require('./src/users/routes/userRoutes')
 const roomRoutes = require('./src/rooms/routes/roomRoutes')
 
@@ -24,8 +23,6 @@ app.use(express.json());
 app.use('/auth/kakao', kakaoAuthRoutes);
 //user 관리
 app.use('/users', userRoutes);
-//홈 탭 ???
-app.use('/home', homeRoutes);
 //room 관리
 app.use('/rooms', roomRoutes)
 
