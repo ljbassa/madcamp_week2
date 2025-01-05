@@ -24,11 +24,31 @@ async function createRoom(name, kakao_ids) {
         console.log(`Inserted ${kakao_ids.length} users into room ${roomId}`);
 
         // 3. notifications에 삽입
-        const insertNotificationsQuery = `
-            INSERT INTO notifications (room_id, user_id) VALUES ?
+            // 1. 해당 데이터 존재 여부 확인
+        const checkQuery = `
+            SELECT id FROM notifications
+            WHERE room_id = ? AND user_id = ?
         `;
-        await connection.query(insertNotificationsQuery, [roomUserValues]);
-        console.log(`Inserted ${kakao_ids.length} users into notificationㄴ ${roomId}`);
+        const [rows] = await connection.query(checkQuery, [roomId, kakaoId]);
+
+        if (rows.length > 0) {
+            // 데이터가 존재하면 업데이트
+            const updateQuery = `
+                UPDATE notifications
+                SET created_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            `;
+            const [updateResult] = await connection.query(updateQuery, [rows[0].id]);
+            console.log(`Updated notification ID: ${rows[0].id}`);
+        } else {
+            // 데이터가 존재하지 않으면 삽입
+            const insertQuery = `
+                INSERT INTO notifications (room_id, user_id)
+                VALUES (?, ?)
+            `;
+            const [insertResult] = await connection.query(insertQuery, [roomId, kakaoId]);
+            console.log(`Inserted notification ID: ${insertResult.insertId}`);
+        }
 
         await connection.commit();
         return { roomId, kakao_ids };
