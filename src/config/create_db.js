@@ -32,7 +32,7 @@ async function initializeDatabase() {
 
     CREATE TABLE IF NOT EXISTS rooms_users (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      user_id INT NOT NULL,
+      user_id BIGINT NOT NULL,
       room_id INT NOT NULL,
       menu VARCHAR(100),
       appeal VARCHAR(255),
@@ -51,7 +51,7 @@ async function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS notifications (
       id INT AUTO_INCREMENT PRIMARY KEY,
       room_id INT NOT NULL,
-      user_id INT NOT NULL,
+      user_id BIGINT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
