@@ -5,7 +5,7 @@ require('dotenv').config();
 
 // 방 생성
 exports.createRoom = async (req, res) => {
-    const { name, kakao_ids } = req.body;
+    const { name, names } = req.body;
 
     if (!name) {
         return res.status(400).json({ success: false, message: 'Room name is required.' });
@@ -13,7 +13,7 @@ exports.createRoom = async (req, res) => {
 
     try {
         // 방 생성
-        const { roomId, kakao_ids } = await createRoom(name, kakao_ids);
+        const { roomId, names } = await createRoom(name, names);
 
         // 생성된 방 정보 조회
         const room = await getRoomById(roomId);

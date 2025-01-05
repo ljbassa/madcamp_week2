@@ -96,11 +96,5 @@ async function inviteUser(name, kakao_ids) {
     } finally { connection.release(); }
 }
 
-// 방 조회
-async function getRoomById(room_id) {
-    const query = 'SELECT * FROM rooms WHERE id = ?';
-    const [rows] = await pool.query(query, [room_id]);
-    return rows[0]; // 방 정보 반환
-}
 
 module.exports = {updateQuiz, updateMenu, updateVote, inviteUser}
