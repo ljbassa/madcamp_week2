@@ -31,21 +31,3 @@ exports.createRoom = async (req, res) => {
 
 
 
-// 방 삭제
-exports.deleteRoomById = async (req, res) => {
-    const { room_id } = req.params;
-    try {
-        const [result] = await pool.query(`
-            DELETE FROM rooms WHERE room_id = ?;
-            DELETE FROM rooms_users WHERE room_id = ?;
-            DELETE FROM notifications WHERE room_id = ?;
-            `, [room_id]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ success: false, message: 'User not found.' });
-        }
-        res.json({ success: true, message: 'User deleted successfully.' });
-    } catch (error) {
-        console.error('Error deleting user:', error.message);
-        res.status(500).json({ success: false, message: 'Failed to delete user.' });
-    }
-};

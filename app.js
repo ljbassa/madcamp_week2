@@ -3,6 +3,8 @@ const cors = require('cors');
 const kakaoAuthRoutes = require('./src/kakaoAuth/routes/kakaoAuthRoutes');
 const userRoutes = require('./src/users/routes/userRoutes')
 const roomRoutes = require('./src/rooms/routes/roomRoutes')
+const roomuserRoutes = require('./src/rooms_users/routes/roomuserRoutes')
+const roomRoutes = require('./src/notifications/routes/notificationRoutes')
 
 require('dotenv').config();
 
@@ -25,6 +27,10 @@ app.use('/auth/kakao', kakaoAuthRoutes);
 app.use('/users', userRoutes);
 //room 관리
 app.use('/rooms', roomRoutes)
+//room-user 관리
+app.use('/rooms_users', roomuserRoutes)
+//notification 관리
+app.use('/notifications', notificationRoutes)
 
 app.listen(process.env.PORT, () => {
     console.log('Server running on http://localhost:3000');
