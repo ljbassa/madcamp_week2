@@ -72,12 +72,12 @@ exports.updateQuiz = async (req, res) => {
     const { room_id, user_id } = req.params;
     const { quiz } = req.body;
 
-    if (!menu && !appeal ) {
+    if (!quiz ) {
         return res.status(400).json({ success: false, message: 'At least one field quiz is required.' });
     }
 
     try {
-        await updateMenu(room_id, user_id, {quiz});
+        await updateQuiz(room_id, user_id, {quiz});
         console.log('update quiz:', {quiz})
 
         res.json({ success: true, message: 'quiz updated successfully.' });
@@ -90,10 +90,10 @@ exports.updateQuiz = async (req, res) => {
 // 회원 별 메뉴, 한 줄 어필 작성
 exports.updateVote = async (req, res) => {
     const { room_id, user_id } = req.params;
-    const { menu, appeal } = req.body;
+    const { vote } = req.body;
 
-    if (!menu && !appeal ) {
-        return res.status(400).json({ success: false, message: 'At least one field (menu or appeal) is required.' });
+    if (!vote ) {
+        return res.status(400).json({ success: false, message: 'At least one field vote is required.' });
     }
 
     try {
@@ -106,3 +106,4 @@ exports.updateVote = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to update vote.' });
     }
 };
+
