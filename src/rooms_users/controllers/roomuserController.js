@@ -97,7 +97,7 @@ exports.updateVote = async (req, res) => {
     }
 
     try {
-        await updateMenu(room_id, user_id, {vote});
+        await updateVote(room_id, user_id, {vote});
         console.log('update vote:', {vote})
 
         res.json({ success: true, message: 'vote updated successfully.' });
