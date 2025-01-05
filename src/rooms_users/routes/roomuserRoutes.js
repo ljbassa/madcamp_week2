@@ -23,7 +23,7 @@ router.patch('/quiz/:room_id/user_id', updateQuiz)
 router.patch('/vote/:room_id/:user_id', updateVote)
 
 // 방 멤버 초대
-//router.post('/invite/:room_id', inviteUser);
+router.post('/invite/:room_id', inviteUser);
 
 
 
