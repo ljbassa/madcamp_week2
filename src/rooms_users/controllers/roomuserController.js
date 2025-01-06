@@ -21,7 +21,7 @@ exports.exitRoomUser = async (req, res) => {
 exports.viewUserRooms = async (req, res) => {
     const { user_id } = req.params;
     try {
-        const [rows] = await viewUserRooms(user_id);
+        const rows = await viewUserRooms(user_id);
         if (rows.length === 0) {
             return res.status(404).json({ success: false, message: 'RoomUser not found.' });
         }
