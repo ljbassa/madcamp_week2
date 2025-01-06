@@ -1,5 +1,5 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { updateMenu, updateQuiz, updateVote, inviteUser } = require('../models/roomuserModel');
+const { viewRoom, viewUserRooms, updateMenu, updateQuiz, updateVote, inviteUser } = require('../models/roomuserModel');
 require('dotenv').config();
 
 // 사용자 삭제
