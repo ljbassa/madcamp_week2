@@ -1,4 +1,5 @@
 const pool = require('../../config/create_db'); // MySQL 연결
+const path = require("path");
 const { updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken } = require('../models/userModel');
 require('dotenv').config();
 
@@ -70,7 +71,14 @@ exports.updateUser = async (req, res) => {
 exports.updateUserPicture = async (req, res) => {
     const { kakao_id } = req.params;
     try {
-        const filePath = req.file.path.replace("src/uploads/", "/uploads/"); // 상대 경로로 저장
+
+        // Multer 파일 확인
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No file uploaded" });
+        }
+
+
+        const filePath = req.file.path.replace(path.join(__dirname, "../../uploads"), "/uploads"); // 상대 경로로 저장
     
         // 데이터베이스 업데이트
         await updateUserPicture(kakao_id, filePath);

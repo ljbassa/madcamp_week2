@@ -1,6 +1,8 @@
-import multer from "multer";
-
+const multer = require("multer");
 const express = require('express');
+const fs = require('fs');
+const path = require("path");
+
 require('dotenv').config();
 const { updateUserPicture, updateUser, getUserByKakaoId, deleteUserByKakaoId, logout } = require('../controllers/userController');
 const router = express.Router();
@@ -9,25 +11,29 @@ const router = express.Router();
 router.patch('/:kakao_id', updateUser)
 
 // Multer 설정
+const uploadDir = path.join(__dirname, "../../uploads");
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "src/uploads/"), // 저장 디렉토리
-    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`), // 파일 이름
+    destination: (req, file, cb) => cb(null, uploadDir),
+    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
-  
 const upload = multer({
     storage,
-    limits: { fileSize: 50 * 1024 * 1024 }, // 파일 크기 제한 (50MB)
+    limits: { fileSize: 50 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
         if (!allowedTypes.includes(file.mimetype)) {
-        return cb(new Error("Only JPEG and PNG files are allowed"), false);
+            return cb(new Error("Only JPEG and PNG files are allowed"), false);
         }
         cb(null, true);
     },
 });
 
-// 사용자 사진 연결
-router.patch('/image/:kakao_id', upload.single("photo"), updateUserPicture)
+// 사진 업로드 라우트
+router.patch('/image/:kakao_id', upload.single("photo"), updateUserPicture);
 
 
 // 특정 사용자 가져오기

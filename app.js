@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const path = require("path");
+const fs = require("fs");
 const kakaoAuthRoutes = require('./src/kakaoAuth/routes/kakaoAuthRoutes');
 const userRoutes = require('./src/users/routes/userRoutes')
 const roomRoutes = require('./src/rooms/routes/roomRoutes')
@@ -9,6 +11,16 @@ const notificationRoutes = require('./src/notifications/routes/notificationRoute
 require('dotenv').config();
 
 const app = express();
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`); // 요청 로그
+    next();
+});
+
+app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err.stack || err);
+    res.status(500).json({ success: false, message: 'Something went wrong!' });
+});
 
 // CORS 설정
 app.use(cors({
@@ -29,7 +41,11 @@ app.use('/auth/kakao', kakaoAuthRoutes);
 app.use('/users', userRoutes);
 
 // 정적 파일 제공 (사진 파일 접근 가능)
-app.use("/uploads", express.static("src/uploads"));
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+app.use("/uploads", express.static(uploadDir));
 
 //room 관리
 app.use('/rooms', roomRoutes)

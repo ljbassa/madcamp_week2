@@ -13,7 +13,7 @@ async function updateUser(kakao_id, data) {
     return result;
 }
 
-// 사용자 이미지 업데이트
+//사용자 이미지 업데이트
 async function updateUserPicture(kakao_id, filePath) {
     const query =`
         INSERT INTO users (kakao_id, picture_path)
@@ -60,4 +60,4 @@ async function saveRefreshToken(kakaoId, refreshToken) {
     return result;
 }
 
-module.exports = { updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken, saveRefreshToken };
+module.exports = { updateUser, getUserByKakaoId, invalidateRefreshToken, saveRefreshToken };
