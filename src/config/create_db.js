@@ -21,7 +21,7 @@ async function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       kakao_id BIGINT NOT NULL UNIQUE,
-      name VARCHAR(100) NOT NULL,
+      name VARCHAR(100) NOT NULL DEFAULT 'unknown',
       nickname VARCHAR(100),
       email VARCHAR(100),
       introduce VARCHAR(255),

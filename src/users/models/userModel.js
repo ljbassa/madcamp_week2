@@ -23,7 +23,13 @@ async function updateUserPicture(kakao_id, filePath) {
     `;
 
     try {
+
+        console.log("Executing SQL query:", query);
+        console.log("With values:", [kakao_id, filePath]);
+
         const [result] = await pool.query(query, [kakao_id, filePath]);
+        console.log("SQL query result:", result);
+        
         return result;
 
     } catch (error) {
@@ -60,4 +66,4 @@ async function saveRefreshToken(kakaoId, refreshToken) {
     return result;
 }
 
-module.exports = { updateUser, getUserByKakaoId, invalidateRefreshToken, saveRefreshToken };
+module.exports = { updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken, saveRefreshToken };

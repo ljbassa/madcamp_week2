@@ -17,8 +17,14 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+    destination: (req, file, cb) => {
+        console.log("Saving file to:", uploadDir);
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        console.log("Uploaded file name:", file.originalname);
+        cb(null, `${req.params.kakao_id}.jpg`);
+    },
 });
 const upload = multer({
     storage,
@@ -33,7 +39,11 @@ const upload = multer({
 });
 
 // 사진 업로드 라우트
-router.patch('/image/:kakao_id', upload.single("photo"), updateUserPicture);
+router.patch('/image/:kakao_id', upload.single("photo"), (req, res, next) => {
+    console.log("Request received for kakao_id:", req.params.kakao_id);
+    console.log("File upload:", req.file);
+    next();
+}, updateUserPicture);
 
 
 // 특정 사용자 가져오기
