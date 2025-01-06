@@ -1,5 +1,6 @@
-const express = require('express');
 import multer from "multer";
+
+const express = require('express');
 require('dotenv').config();
 const { updateUserPicture, updateUser, getUserByKakaoId, deleteUserByKakaoId, logout } = require('../controllers/userController');
 const router = express.Router();
