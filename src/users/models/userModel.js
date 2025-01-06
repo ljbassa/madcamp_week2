@@ -13,6 +13,24 @@ async function updateUser(kakao_id, data) {
     return result;
 }
 
+// 사용자 이미지 업데이트
+async function updateUserPicture(kakao_id, filePath) {
+    const query =`
+        INSERT INTO users (kakao_id, picture_path)
+        VALUES (?, ?)
+        ON DUPLICATE KEY UPDATE
+        picture_path = VALUES(picture_path)
+    `;
+
+    try {
+        const [result] = await pool.query(query, [kakao_id, filePath]);
+        return result;
+
+    } catch (error) {
+        throw new Error("Failed to update user picture in database: " + error.message);
+    }
+}
+
 // 카카오 ID로 사용자 정보 가져오기 (선택)
 async function getUserByKakaoId(kakao_id) {
     const query = 'SELECT * FROM users WHERE kakao_id = ?';
@@ -42,4 +60,4 @@ async function saveRefreshToken(kakaoId, refreshToken) {
     return result;
 }
 
-module.exports = { updateUser, getUserByKakaoId, invalidateRefreshToken, saveRefreshToken };
+module.exports = { updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken, saveRefreshToken };

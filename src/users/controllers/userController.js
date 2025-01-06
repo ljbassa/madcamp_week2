@@ -1,5 +1,5 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { updateUser, getUserByKakaoId, invalidateRefreshToken } = require('../models/userModel');
+const { updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken } = require('../models/userModel');
 require('dotenv').config();
 
 
@@ -66,6 +66,31 @@ exports.updateUser = async (req, res) => {
     }
 };
 
+// 사진 업로드
+exports.updateUserPicture = async (req, res) => {
+    const { kakao_id } = req.params;
+    try {
+        const filePath = req.file.path.replace("src/uploads/", "/uploads/"); // 상대 경로로 저장
+    
+        // 데이터베이스 업데이트
+        await updateUserPicture(kakao_id, filePath);
+    
+        res.status(200).json({
+          success: true,
+          message: "Picture path updated successfully",
+          filePath,
+        });
+      } catch (error) {
+        console.error(error.message);
+        res.status(500).json({
+          success: false,
+          message: "Failed to update picture",
+        });
+      }
+}
+
+
+// 로그아웃
 exports.logout = async (req, res) => {
     const { kakao_id } = req.params;
 

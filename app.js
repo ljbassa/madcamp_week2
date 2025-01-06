@@ -19,16 +19,24 @@ app.use(cors({
 
 // Body-parser 설정
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // 라우터 등록
 // 카카오 로그인
 app.use('/auth/kakao', kakaoAuthRoutes);
+
 //user 관리
 app.use('/users', userRoutes);
+
+// 정적 파일 제공 (사진 파일 접근 가능)
+app.use("/uploads", express.static("src/uploads"));
+
 //room 관리
 app.use('/rooms', roomRoutes)
+
 //room-user 관리
 app.use('/rooms_users', roomuserRoutes)
+
 //notification 관리
 app.use('/notifications', notificationRoutes)
 

@@ -14,10 +14,10 @@ router.get('/home1/:user_id', viewUserRooms)
 router.get('/home2/:room_id', viewRoom)
 
 // 회원 별 메뉴, 한 줄 어필 작성
-router.patch('/menu/:room_id/user_id', updateMenu)
+router.patch('/menu/:room_id/:user_id', updateMenu)
 
 // 회원 별 퀴즈 정답 유무
-router.patch('/quiz/:room_id/user_id', updateQuiz)
+router.patch('/quiz/:room_id/:user_id', updateQuiz)
 
 // 회원 별 방 투표 현황
 router.patch('/vote/:room_id/:user_id', updateVote)
