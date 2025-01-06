@@ -21,7 +21,7 @@ exports.exitRoomUser = async (req, res) => {
 exports.viewUserRooms = async (req, res) => {
     const { user_id } = req.params;
     try {
-        const [rows] = await pool.query('SELECT * FROM rooms_users WHERE user_id = ?', [user_id]);
+        const [rows] = await viewUserRooms(user_id);
         if (rows.length === 0) {
             return res.status(404).json({ success: false, message: 'RoomUser not found.' });
         }
@@ -32,15 +32,15 @@ exports.viewUserRooms = async (req, res) => {
     }
 };
 
-// 각 방 조회
+// 각 방 조회, 방 정보와 속한 회원 이름 리스트 반환
 exports.viewRoom = async (req, res) => {
     const { room_id } = req.params;
     try {
-        const [rows] = await pool.query('SELECT * FROM rooms_users WHERE room_id = ?', [room_id]);
+        const {roomInfo, names} = await viewRoom(room_id);
         if (rows.length === 0) {
             return res.status(404).json({ success: false, message: 'RoomUser not found.' });
         }
-        res.json({ success: true, data: rows });
+        res.json({ success: true, data: {roomInfo, names} });
     } catch (error) {
         console.error('Error fetching roomuser:', error.message);
         res.status(500).json({ success: false, message: 'Failed to fetch roomuser.' });
