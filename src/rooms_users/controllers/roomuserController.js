@@ -112,7 +112,7 @@ exports.inviteUser = async (req, res) => {
     const { room_id } = req.params;
     const { names } = req.body;
 
-    if ( names.length == 0 ) {
+    if ( names.length === 0 ) {
         return res.status(400).json({ success: false, message: 'At least one name is required.' });
     }
 
