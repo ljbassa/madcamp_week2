@@ -37,9 +37,6 @@ exports.viewRoom = async (req, res) => {
     const { room_id } = req.params;
     try {
         const {roomInfo, names} = await viewRoom(room_id);
-        if (rows.length === 0) {
-            return res.status(404).json({ success: false, message: 'RoomUser not found.' });
-        }
         res.json({ success: true, data: {roomInfo, names} });
     } catch (error) {
         console.error('Error fetching roomuser:', error.message);
