@@ -30,7 +30,7 @@ async function viewRoom(room_id) {
 
         // room 정보 반환
         const query = `
-            SELECT * FROM rooms WHERE room_id = ?
+            SELECT * FROM rooms WHERE id = ?
         `;
 
         
@@ -47,7 +47,7 @@ async function viewRoom(room_id) {
         const userNameListQuery = `
             SELECT u.name
             FROM users u
-            JOIN rooms_users ru ON u.user_id = ru.user_id
+            JOIN rooms_users ru ON u.kakao_id = ru.user_id
             WHERE ru.room_id = ?
         `;
 
