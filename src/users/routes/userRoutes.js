@@ -22,7 +22,6 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        console.log("Uploaded file name:", file.originalname);
         cb(null, `${req.params.kakao_id}.jpg`);
     },
 });
