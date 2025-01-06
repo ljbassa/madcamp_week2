@@ -7,12 +7,12 @@ async function viewUserRooms(user_id) {
     const roomIdListQuery = `
         SELECT room_id FROM rooms_users WHERE user_id = ?
     `;
-    const [roomIdRows] = await connection.query(roomIdListQuery, [user_id]);
+    const [roomIdRows] = await pool.query(roomIdListQuery, [user_id]);
     const roomIds = roomIdRows.map(row => row.room_id);
 
     for (const roomId of roomIds) {
         // 3.1 해당 데이터 존재 여부 확인
-        const data = viewRoom(roomId)
+        const data = await viewRoom(roomId)
         datas.push(data)
     }
     console.log(datas)
