@@ -18,6 +18,10 @@ if (!fs.existsSync(uploadDir)) {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        if (!fs.existsSync(uploadDir)) {
+            console.error("Upload directory does not exist:", uploadDir);
+            return cb(new Error("Upload directory does not exist"));
+        }
         console.log("Saving file to:", uploadDir);
         cb(null, uploadDir);
     },

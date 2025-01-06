@@ -45,7 +45,7 @@ const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
-app.use("/uploads", express.static(uploadDir));
+app.use("/src/uploads", express.static(uploadDir));
 
 //room 관리
 app.use('/rooms', roomRoutes)

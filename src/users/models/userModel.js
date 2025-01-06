@@ -16,8 +16,8 @@ async function updateUser(kakao_id, data) {
 //사용자 이미지 업데이트
 async function updateUserPicture(kakao_id, filePath) {
     const query =`
-        INSERT INTO users (kakao_id, picture_path)
-        VALUES (?, ?)
+        INSERT INTO users (kakao_id, picture_path, name)
+        VALUES (?, ?, ?)
         ON DUPLICATE KEY UPDATE
         picture_path = VALUES(picture_path)
     `;
@@ -27,7 +27,7 @@ async function updateUserPicture(kakao_id, filePath) {
         console.log("Executing SQL query:", query);
         console.log("With values:", [kakao_id, filePath]);
 
-        const [result] = await pool.query(query, [kakao_id, filePath]);
+        const [result] = await pool.query(query, [kakao_id, filePath, "default name"]);
         console.log("SQL query result:", result);
         
         return result;
