@@ -22,7 +22,8 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        cb(null, `${req.params.kakao_id}.jpg`);
+        const kakaoId = path.parse(req.params.kakao_id).name;
+        cb(null, `${kakaoId}.jpg`);
     },
 });
 const upload = multer({
@@ -38,11 +39,11 @@ const upload = multer({
 });
 
 // 사진 업로드 라우트
-router.patch('/image/:kakao_id', upload.single("photo"), (req, res, next) => {
+router.patch('/image/:kakao_id', upload.single("photo"), async (req, res) => {
     console.log("Request received for kakao_id:", req.params.kakao_id);
     console.log("File upload:", req.file);
-    next();
-}, updateUserPicture);
+    await updateUserPicture(req, res); // 직접 호출
+});
 
 
 // 특정 사용자 가져오기

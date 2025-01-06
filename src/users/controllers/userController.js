@@ -69,7 +69,7 @@ exports.updateUser = async (req, res) => {
 
 // 사진 업로드
 exports.updateUserPicture = async (req, res) => {
-    const { kakao_id } = req.params;
+    let { kakao_id } = req.params;
     try {
 
         // Multer 파일 확인
@@ -77,8 +77,10 @@ exports.updateUserPicture = async (req, res) => {
             return res.status(400).json({ success: false, message: "No file uploaded" });
         }
 
+        // 확장자 제거 (필요 시)
+        kakao_id = path.parse(kakao_id).name;
 
-        const filePath = req.file.path.replace(path.join(__dirname, "../../uploads"), "/uploads"); // 상대 경로로 저장
+        const filePath = req.file.path.replace(path.resolve(__dirname, "../../uploads"), "/uploads"); // 상대 경로로 저장
     
         // 데이터베이스 업데이트
         await updateUserPicture(kakao_id, filePath);
