@@ -41,11 +41,11 @@ app.use('/auth/kakao', kakaoAuthRoutes);
 app.use('/users', userRoutes);
 
 // 정적 파일 제공 (사진 파일 접근 가능)
-const uploadDir = path.join(__dirname, "uploads");
+const uploadDir = path.join(__dirname, "src/uploads");
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
-app.use("/src/uploads", express.static(uploadDir));
+app.use("/uploads", express.static(uploadDir));
 
 //room 관리
 app.use('/rooms', roomRoutes)
