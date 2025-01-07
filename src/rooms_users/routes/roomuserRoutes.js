@@ -1,6 +1,6 @@
 const express = require('express');
 require('dotenv').config();
-const { quiznommenu, exitRoomUser, viewUserRooms, viewRoom, updateMenu, updateQuiz, updateVote, inviteUser } = require('../controllers/roomuserController');
+const { resetQuiz, quiznommenu, exitRoomUser, viewUserRooms, viewRoom, updateMenu, updateQuiz, updateVote, inviteUser } = require('../controllers/roomuserController');
 const router = express.Router();
 
 
@@ -27,6 +27,9 @@ router.patch('/vote/:room_id/:user_id', updateVote)
 
 // 방 멤버 초대
 router.post('/invite/:room_id', inviteUser);
+
+// 개발용: 방에 있는 퀴즈 초기화 = 디폴트 맞춘 상태
+route.patch('program/:room_id', resetQuiz);
 
 
 

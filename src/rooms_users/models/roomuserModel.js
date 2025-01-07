@@ -15,6 +15,17 @@ async function quiznommenu(room_id) {
     return menuList;
 }
 
+async function resetQuiz(room_id) {
+    const query = `
+        UPDATE rooms_users
+        SET quiz = 1
+        WHERE room_id = ?;
+    `;
+
+    const [result] = await pool.query(query, [room_id]);
+
+}
+
 
 
 async function viewUserRooms(user_id) {
@@ -204,5 +215,5 @@ async function inviteUser(room_id, names) {
     }
 }
 
-module.exports = {quiznommenu, viewUserRooms, viewRoom, updateQuiz, updateMenu, updateVote, inviteUser}
+module.exports = {resetQuiz, quiznommenu, viewUserRooms, viewRoom, updateQuiz, updateMenu, updateVote, inviteUser}
 

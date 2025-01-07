@@ -1,5 +1,5 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { quiznommenu, viewRoom, viewUserRooms, updateMenu, updateQuiz, updateVote, inviteUser } = require('../models/roomuserModel');
+const { resetQuiz, quiznommenu, viewRoom, viewUserRooms, updateMenu, updateQuiz, updateVote, inviteUser } = require('../models/roomuserModel');
 require('dotenv').config();
 
 
@@ -134,3 +134,13 @@ exports.inviteUser = async (req, res) => {
     }
 };
 
+exports.resetQuiz = async (req, res) => {
+    const { room_id } = req.params;
+    try {
+        const rows = await resetQuiz(room_id);
+        res.json({ success: true, data: rows });
+    } catch (error) {
+        console.error('Error fetching roomuser:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch roomuser.' });
+    }
+};
