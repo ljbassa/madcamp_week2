@@ -15,6 +15,7 @@ exports.getImageByRandom = async (req, res) => {
     }
 }
 
+
 // 특정 사용자 가져오기
 exports.getUserByKakaoId = async (req, res) => {
     const { kakao_id } = req.params;
@@ -29,7 +30,6 @@ exports.getUserByKakaoId = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to fetch user.' });
     }
 };
-
 
 
 // 사용자 삭제
@@ -79,13 +79,22 @@ exports.updateUser = async (req, res) => {
 };
 
 // 사진 업로드
-exports.updateUserPicture = async (kakao_id, filePaths) => {
+exports.updateUserPicture = async (req, res) => {
     try {
+        const {kakao_id} = req.params;
 
         // Multer 파일 확인
         if (!req.file) {
             return res.status(400).json({ success: false, message: "No file uploaded" });
         }
+
+        const originalPath = req.file.path.replace(path.resolve(__dirname, '../../uploads'), '/uploads');
+        const transformedPath = originalPath.replace(/(\.[\w\d_-]+)$/i, '_swirl$1'); // _swirl 추가
+
+        const filePaths = {
+            original: originalPath,
+            transformed: transformedPath,
+        };
 
         // 확장자 제거 (필요 시)
         kakao_id = path.parse(kakao_id).name;
