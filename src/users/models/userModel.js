@@ -4,7 +4,7 @@ require('dotenv').config();
 // 이미지 랜덤 get, 이름과 사진경로 반환
 async function getImageByRandom(room_id) {
     const query = `
-    SELECT u.name, u.picture_path
+    SELECT u.name, u.picture_path, u.menu, u.appeal
     FROM rooms_users ru
     JOIN users u ON ru.user_id = u.kakao_id
     WHERE ru.room_id = ?
@@ -29,7 +29,7 @@ async function updateUser(kakao_id, data) {
 }
 
 //사용자 이미지 업데이트
-async function updateUserPicture(kakao_id, filePath) {
+async function updateUserPicture(kakao_id, filePaths) {
     const query =`
         INSERT INTO users (kakao_id, picture_path, name)
         VALUES (?, ?, ?)
@@ -41,8 +41,8 @@ async function updateUserPicture(kakao_id, filePath) {
 
         console.log("Executing SQL query:", query);
         console.log("With values:", [kakao_id, filePath]);
-
-        const [result] = await pool.query(query, [kakao_id, filePath, "default name"]);
+        const {original, transformed} = filePaths
+        const [result] = await pool.query(query, [kakao_id, original, "default name"]);
         console.log("SQL query result:", result);
         
         return result;

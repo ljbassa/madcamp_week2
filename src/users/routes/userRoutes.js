@@ -2,6 +2,7 @@ const multer = require("multer");
 const express = require('express');
 const fs = require('fs');
 const path = require("path");
+const { execFile } = require('child_process');
 
 require('dotenv').config();
 const { getImageByRandom, updateUserPicture, updateUser, getUserByKakaoId, deleteUserByKakaoId, logout } = require('../controllers/userController');
@@ -47,9 +48,59 @@ const upload = multer({
 
 // 사진 업로드 라우트
 router.patch('/image/:kakao_id', upload.single("photo"), async (req, res) => {
-    console.log("Request received for kakao_id:", req.params.kakao_id);
+    const { kakao_id } = req.params;
+    const originalPath = req.file.path;
+    const transformedPath = path.join(uploadDir, `${path.parse(kakao_id).name}_swirl.jpg`);
+
+    console.log("Request received for kakao_id:", kakao_id);
     console.log("File upload:", req.file);
-    await updateUserPicture(req, res); // 직접 호출
+
+    try {
+
+        // 파이썬 파일 경로
+        const pythonScriptPath = path.resolve(__dirname, '../services/soyong.py');
+
+        // Python 실행
+        execFile('python3', [pythonScriptPath, originalPath, transformedPath], (error, stdout, stderr) => {
+            if (error) {
+                console.error('Error executing Python script:', error);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Failed to apply swirl effect.',
+                });
+            }
+
+    console.log('Python script output:', stdout);
+
+        // 데이터베이스에 원본 및 변환된 사진 경로 저장
+        const filePaths = {
+            original: originalPath.replace(path.resolve(__dirname, '../../uploads'), '/uploads'),
+            transformed: transformedPath.replace(path.resolve(__dirname, '../../uploads'), '/uploads'),
+        };
+
+        updateUserPicture(kakao_id, filePaths)
+                .then(() => {
+                    res.status(200).json({
+                        success: true,
+                        message: 'Picture uploaded and transformed successfully',
+                        filePaths,
+                    });
+                })
+                .catch((dbError) => {
+                    console.error('Database error:', dbError);
+                    res.status(500).json({
+                        success: false,
+                        message: 'Failed to update database.',
+                    });
+                });
+        });
+    } catch (error) {
+        console.error('Error processing file:', error.message);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to process and transform picture.',
+        });
+    }
 });
 
 
