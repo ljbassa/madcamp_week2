@@ -7,7 +7,7 @@ require('dotenv').config();
 exports.quiznommenu = async (req, res) => {
     const { room_id } = req.params;
     try {
-        const [rows] = await quiznommenu(room_id)
+        const rows = await quiznommenu(room_id)
         res.json({success: true, data: rows})
     } catch (error) {
         console.error('Error fetching menu list:', error.message);
