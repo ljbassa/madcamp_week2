@@ -1,5 +1,5 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { getNotifications } = require('../models/notificationModel');
+const { getNotifications, sendNotification } = require('../models/notificationModel');
 require('dotenv').config();
 
 
@@ -29,6 +29,17 @@ exports.deleteNotificationById = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to delete user.' });
     }
 };
+
+exports.sendNotification = async (req, res) => {
+    const {room_id, user1_id, user2_id} = req.params;
+    try {
+        const rows = await sendNotification(room_id, user1_id, user2_id)
+        res.json({success:true, data:rows})
+    } catch (error) {
+        console.error('Error fetching send notif:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch send notif.' });
+    }
+}
 
 
 
