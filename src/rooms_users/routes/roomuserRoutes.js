@@ -1,8 +1,11 @@
 const express = require('express');
 require('dotenv').config();
-const { exitRoomUser, viewUserRooms, viewRoom, updateMenu, updateQuiz, updateVote, inviteUser } = require('../controllers/roomuserController');
+const { quiznommenu, exitRoomUser, viewUserRooms, viewRoom, updateMenu, updateQuiz, updateVote, inviteUser } = require('../controllers/roomuserController');
 const router = express.Router();
 
+
+//퀴즈 메뉴
+router.get(':room_id/quiznommenu', quiznommenu)
 
 // 회원 별 방 나가기
 router.delete('/:room_id/:user_id', exitRoomUser)
