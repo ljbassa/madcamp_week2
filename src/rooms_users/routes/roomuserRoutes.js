@@ -29,7 +29,7 @@ router.patch('/vote/:room_id/:user_id', updateVote)
 router.post('/invite/:room_id', inviteUser);
 
 // 개발용: 방에 있는 퀴즈 초기화 = 디폴트 맞춘 상태
-route.patch('program/:room_id', resetQuiz);
+router.patch('program/:room_id', resetQuiz);
 
 
 
