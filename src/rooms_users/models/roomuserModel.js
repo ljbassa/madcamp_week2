@@ -23,7 +23,7 @@ async function resetQuiz(room_id) {
     `;
 
     const [result] = await pool.query(query, [room_id]);
-
+    return result;
 }
 
 
