@@ -33,8 +33,8 @@ exports.viewUserRooms = async (req, res) => {
 exports.viewRoom = async (req, res) => {
     const { room_id } = req.params;
     try {
-        const {roomInfo, names} = await viewRoom(room_id);
-        res.json({ success: true, data: {roomInfo, names} });
+        const {roomInfo, names, userIds} = await viewRoom(room_id);
+        res.json({ success: true, data: {roomInfo, names, userIds} });
     } catch (error) {
         console.error('Error fetching roomuser:', error.message);
         res.status(500).json({ success: false, message: 'Failed to fetch roomuser.' });

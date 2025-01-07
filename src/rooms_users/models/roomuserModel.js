@@ -55,7 +55,7 @@ async function viewRoom(room_id) {
         const names = userNameRows.map(row => row.name);
         console.log(userIds, names); // 이름 리스트 출력
 
-        return {roomInfo, names};
+        return {roomInfo, names, userIds};
 
 
 

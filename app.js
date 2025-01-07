@@ -41,7 +41,7 @@ app.use('/auth/kakao', kakaoAuthRoutes);
 app.use('/users', userRoutes);
 
 // 정적 파일 제공 (사진 파일 접근 가능)
-const uploadDir = path.join(__dirname, "src/uploads");
+const uploadDir = path.resolve(__dirname, "src/uploads");
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
