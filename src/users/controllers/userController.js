@@ -1,9 +1,19 @@
 const pool = require('../../config/create_db'); // MySQL 연결
 const path = require("path");
-const { updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken } = require('../models/userModel');
+const { getImageByRandom, updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken } = require('../models/userModel');
 require('dotenv').config();
 
-
+// 이미지 랜덤 get
+exports.getImageByRandom = async (req, res) => {
+    const { room_id } = req.params;
+    try {
+        const [rows] = await getImageByRandom(room_id)
+        res.json({success: true, data: rows})
+    } catch (error) {
+        console.error('Error fetching get Image By Random:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch getImageByRandom.' });
+    }
+}
 
 // 특정 사용자 가져오기
 exports.getUserByKakaoId = async (req, res) => {

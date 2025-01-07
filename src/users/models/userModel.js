@@ -1,6 +1,21 @@
 const pool = require('../../config/create_db');
 require('dotenv').config();
 
+// 이미지 랜덤 get, 이름과 사진경로 반환
+async function getImageByRandom(room_id) {
+    const query = `
+    SELECT u.name, u.picture_path
+    FROM rooms_users ru
+    JOIN users u ON ru.user_id = u.kakao_id
+    WHERE ru.room_id = ?
+    ORDER BY RAND()
+    LIMIT 1;
+    `
+    const [result] = await pool.query(query, [room_id])
+    return result[0];
+}
+
+
 // 사용자 정보 업데이트
 async function updateUser(kakao_id, data) {
     const query = `
@@ -66,4 +81,4 @@ async function saveRefreshToken(kakaoId, refreshToken) {
     return result;
 }
 
-module.exports = { updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken, saveRefreshToken };
+module.exports = { getImageByRandom, updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken, saveRefreshToken };
