@@ -2,6 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const path = require("path");
 const fs = require("fs");
+const http = require('http');
+const https = require('https');
+
 const kakaoAuthRoutes = require('./src/kakaoAuth/routes/kakaoAuthRoutes');
 const userRoutes = require('./src/users/routes/userRoutes')
 const roomRoutes = require('./src/rooms/routes/roomRoutes')
@@ -12,16 +15,22 @@ require('dotenv').config();
 
 const app = express();
 
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`); // 요청 로그
-    next();
-});
+// Certificate 인증서 경로
+const privateKey = fs.readFileSync('./../../etc/letsencrypt/live/api.hmhgmg.r-e.kr/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('./../../etc/letsencrypt/live/api.hmhgmg.r-e.kr/cert.pem', 'utf8');
+const ca = fs.readFileSync('./../../etc/letsencrypt/live/api.hmhgmg.r-e.kr/chain.pem', 'utf8');
 
-app.use((err, req, res, next) => {
-    console.error('Unhandled error:', err.stack || err);
-    res.status(500).json({ success: false, message: 'Something went wrong!' });
-});
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
 
+// Starting both http & https servers
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+
+//https://gmghmh.netlify.app
 // CORS 설정
 app.use(cors({
     origin: 'http://localhost:3000', // 허용할 클라이언트의 출처
@@ -56,6 +65,10 @@ app.use('/rooms_users', roomuserRoutes)
 //notification 관리
 app.use('/notifications', notificationRoutes)
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server running on http://localhost:${process.env.PORT}`);
+httpServer.listen(80, () => {
+	console.log('HTTP Server running on port 80');
+});
+
+httpsServer.listen(443, () => {
+	console.log('HTTPS Server running on port 443');
 });

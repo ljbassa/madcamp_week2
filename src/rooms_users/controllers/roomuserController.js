@@ -124,8 +124,8 @@ exports.inviteUser = async (req, res) => {
     }
 
     try {
-        await inviteUser(room_id, {names});
-        console.log('update members:', {names})
+        await inviteUser(room_id, names);
+        console.log('update members:', names)
 
         res.json({ success: true, message: 'invited successfully.' });
     } catch (error) {
