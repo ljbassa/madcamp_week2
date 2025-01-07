@@ -79,42 +79,14 @@ exports.updateUser = async (req, res) => {
 };
 
 // 사진 업로드
-exports.updateUserPicture = async (req, res) => {
+exports.updateUserPicture = async (kakao_id, filePaths) => {
     try {
-        const {kakao_id} = req.params;
-
-        // Multer 파일 확인
-        if (!req.file) {
-            return res.status(400).json({ success: false, message: "No file uploaded" });
-        }
-
-        const originalPath = req.file.path.replace(path.resolve(__dirname, '../../uploads'), '/uploads');
-        const transformedPath = originalPath.replace(/(\.[\w\d_-]+)$/i, '_swirl$1'); // _swirl 추가
-
-        const filePaths = {
-            original: originalPath,
-            transformed: transformedPath,
-        };
-
-        // 확장자 제거 (필요 시)
-        kakao_id = path.parse(kakao_id).name;
-    
         // 데이터베이스 업데이트
-        await updateUserPicture(kakao_id, filePaths);
-    
-        res.status(200).json({
-          success: true,
-          message: "Picture path updated successfully",
-          filePaths,
-        });
-      } catch (error) {
-        console.error(error.message);
-        res.status(500).json({
-          success: false,
-          message: "Failed to update picture",
-        });
-      }
-}
+        await updateUserPicture(kakao_id, filePaths); // 모델 호출
+    } catch (error) {
+        throw new Error("Failed to update picture: " + error.message);
+    }
+};
 
 
 // 로그아웃
