@@ -69,9 +69,20 @@ async function viewRoom(room_id) {
 
         const [userNameRows] = await connection.query(userNameListQuery, [room_id]);
         const names = userNameRows.map(row => row.name);
-        console.log(userIds, names); // 이름 리스트 출력
+        
+        // 유저 사진 경로 리스트 반환
+        const userPhotoListQuery = `
+            SELECT u.picture_path
+            FROM users u
+            JOIN rooms_users ru ON u.kakao_id = ru.user_id
+            WHERE ru.room_id = ?
+        `;
 
-        return {roomInfo, names, userIds};
+        const [userPictureRows] = await connection.query(userPhotoListQuery, [room_id]);
+        const picture_pathes = userPictureRows.map(row => row.picture_path);
+
+
+        return {roomInfo, names, userIds, picture_pathes};
 
 
 
