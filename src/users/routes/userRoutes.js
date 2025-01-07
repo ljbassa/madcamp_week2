@@ -4,8 +4,11 @@ const fs = require('fs');
 const path = require("path");
 
 require('dotenv').config();
-const { updateUserPicture, updateUser, getUserByKakaoId, deleteUserByKakaoId, logout } = require('../controllers/userController');
+const { getImageByRandom, updateUserPicture, updateUser, getUserByKakaoId, deleteUserByKakaoId, logout } = require('../controllers/userController');
 const router = express.Router();
+
+//이미지 랜덤 get
+router.get('/:room_id/randomImage', getImageByRandom)
 
 // 사용자 kakao_id에 따라 PATCH
 router.patch('/:kakao_id', updateUser)

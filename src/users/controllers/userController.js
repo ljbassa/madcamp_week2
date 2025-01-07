@@ -7,8 +7,8 @@ require('dotenv').config();
 exports.getImageByRandom = async (req, res) => {
     const { room_id } = req.params;
     try {
-        const [rows] = await getImageByRandom(room_id)
-        res.json({success: true, data: rows})
+        const user = await getImageByRandom(room_id)
+        res.json({success: true, data: user})
     } catch (error) {
         console.error('Error fetching get Image By Random:', error.message);
         res.status(500).json({ success: false, message: 'Failed to fetch getImageByRandom.' });
