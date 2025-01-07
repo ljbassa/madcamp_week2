@@ -4,6 +4,7 @@ const { updateUserPicture, updateUser, getUserByKakaoId, invalidateRefreshToken 
 require('dotenv').config();
 
 
+
 // 특정 사용자 가져오기
 exports.getUserByKakaoId = async (req, res) => {
     const { kakao_id } = req.params;

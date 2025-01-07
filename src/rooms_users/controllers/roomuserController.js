@@ -1,6 +1,19 @@
 const pool = require('../../config/create_db'); // MySQL 연결
-const { viewRoom, viewUserRooms, updateMenu, updateQuiz, updateVote, inviteUser } = require('../models/roomuserModel');
+const { quiznommenu, viewRoom, viewUserRooms, updateMenu, updateQuiz, updateVote, inviteUser } = require('../models/roomuserModel');
 require('dotenv').config();
+
+
+// 퀴즈 맞춘 애들 메뉴 리스트
+exports.quiznommenu = async (req, res) => {
+    const { room_id } = req.params;
+    try {
+        const [rows] = await quiznommenu(room_id)
+        res.json({success: true, data: rows})
+    } catch (error) {
+        console.error('Error fetching menu list:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to fetch menulist.' });
+    }
+}
 
 // 사용자 삭제
 exports.exitRoomUser = async (req, res) => {

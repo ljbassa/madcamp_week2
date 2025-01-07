@@ -53,6 +53,9 @@ router.patch('/image/:kakao_id', upload.single("photo"), async (req, res) => {
 // 특정 사용자 가져오기
 router.get('/:kakao_id', getUserByKakaoId);
 
+// 퀴즈 맞춘 놈 메뉴 리스트
+router.get('/:room_id/quiznommenu', quiznommenu)
+
 // 사용자 삭제
 router.delete('/:kakao_id/delete', deleteUserByKakaoId);
 

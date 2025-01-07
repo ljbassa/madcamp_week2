@@ -1,6 +1,23 @@
 const pool = require('../../config/create_db');
 require('dotenv').config();
 
+
+async function quiznommenu(room_id) {
+    const query = `
+            SELECT menu
+            FROM rooms_users
+            WHERE room_id = ?
+            AND quiz = 1;
+            `;
+
+    const [rows] = await pool.query(query, [room_id]);
+    const menuList = rows.map(row => row.menu);
+    return menuList;
+}
+
+
+
+
 async function viewUserRooms(user_id) {
     let datas = [];
 
@@ -177,5 +194,5 @@ async function inviteUser(room_id, names) {
     }
 }
 
-module.exports = {viewUserRooms, viewRoom, updateQuiz, updateMenu, updateVote, inviteUser}
+module.exports = {quiznommenu, viewUserRooms, viewRoom, updateQuiz, updateMenu, updateVote, inviteUser}
 
