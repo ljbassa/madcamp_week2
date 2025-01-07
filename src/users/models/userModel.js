@@ -12,7 +12,21 @@ async function getImageByRandom(room_id) {
     LIMIT 1;
     `
     const [result] = await pool.query(query, [room_id])
-    return result[0];
+    
+    if (result.length === 0) {
+        return null; // 해당 room_id에 사용자가 없을 경우
+    }
+
+    const originalPicturePath = result[0].picture_path;
+
+    // 변환된 사진 경로 생성 (_swirl 붙이기)
+    const swirlPicturePath = originalPicturePath.replace(/(\.[\w\d_-]+)$/i, '_swirl$1');
+
+    // 반환 데이터에 swirl 경로 추가
+    return {
+        ...result[0],
+        picture_path: swirlPicturePath,
+    };
 }
 
 
