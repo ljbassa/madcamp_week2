@@ -31,6 +31,7 @@ const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
 //https://gmghmh.netlify.app
+//http://localhost:3000
 // CORS 설정
 app.use(cors({
     origin: 'http://localhost:3000', // 허용할 클라이언트의 출처
