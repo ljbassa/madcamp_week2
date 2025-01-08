@@ -94,5 +94,65 @@ async function getRoomById(room_id) {
     return rows[0]; // 방 정보 반환
 }
 
+// 랜덤으로 뽑은 메뉴 방 디비에 저장
+async function randomMenu(room_id, menu) {
+    const query = `
+        UPDATE rooms
+        SET menu = ?
+        WHERE id = ?
+    `;
+    await pool.query(query, [menu, room_id]);
+    console.log(`Room ${room_id} menu updated to ${menu}`);
+}
 
-module.exports = { createRoom, getRoomById };
+// 투표 끝나고 넘어가기
+async function allVotePlease(room_id) {
+    const connection = await pool.getConnection(); // 연결 가져오기
+
+    try {
+        // 트랜잭션 시작
+        await connection.beginTransaction();
+
+        // 1. rooms_users 테이블에서 해당 room_id의 vote 상태 확인
+        const queryVotes = `
+            SELECT vote
+            FROM rooms_users
+            WHERE room_id = ?
+        `;
+
+        const [votes] = await connection.query(queryVotes, [room_id]);
+
+        // 모든 vote가 NULL이 아니면 업데이트 수행
+        const allVotesPresent = votes.every(row => row.vote !== null);
+
+        if (allVotesPresent) {
+            // 2. rooms 테이블에서 vote 값을 1로 업데이트
+            const updateRoomQuery = `
+                UPDATE rooms
+                SET vote = 1
+                WHERE id = ?
+            `;
+
+            await connection.query(updateRoomQuery, [room_id]);
+            console.log(`Room ${room_id} vote updated to 1`);
+        } else {
+            console.log(`Room ${room_id} vote update skipped (some votes are NULL)`);
+        }
+
+        // 트랜잭션 커밋
+        await connection.commit();
+
+    } catch (error) {
+        // 트랜잭션 롤백
+        await connection.rollback();
+        console.error('Error updating room vote:', error);
+        throw error;
+
+    } finally {
+        // 연결 반환
+        connection.release();
+    }
+}
+
+
+module.exports = { randomMenu, createRoom, getRoomById, allVotePlease };

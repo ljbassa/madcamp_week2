@@ -37,7 +37,7 @@ async function initializeDatabase() {
       menu VARCHAR(100),
       appeal VARCHAR(255),
       quiz TINYINT(1) DEFAULT 1,
-      vote TINYINT(1) DEFAULT 1,
+      vote TINYINT(1),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
@@ -45,6 +45,8 @@ async function initializeDatabase() {
     CREATE TABLE IF NOT EXISTS rooms (
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(100) NOT NULL,
+      vote TINYINT(1),
+      menu VARCHAR(100),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 

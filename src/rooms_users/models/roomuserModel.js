@@ -135,14 +135,32 @@ async function updateQuiz(room_id, user_id, data) {
 
 // 투표 정보 업데이트
 async function updateVote(room_id, user_id, data) {
+    const connection = await pool.getConnection(); // 연결 가져오기
+    
+    try {
     const query = `
         UPDATE rooms_users
         SET vote = ?,
         created_at = CURRENT_TIMESTAMP
         WHERE room_id = ? AND user_id = ?
     `;
-    const [result] = await pool.query(query, [data.vote, room_id, user_id]);
+    const [result] = await connection.query(query, [data.vote, room_id, user_id]);
+
+    const voteQuery = `
+        UPDATE rooms
+        SET vote = 0,
+        WHERE id = ?
+    `;
+    await connection.query(voteQuery, [room_id])
+    await connection.commit(); // 트랜잭션 커밋
     return result;
+    } catch (error) {
+        await connection.rollback(); // 트랜잭션 롤백
+        console.error('Error creating vote room:', error);
+        throw error;
+    } finally {
+        connection.release(); // 연결 반환
+    }
 }
 
 async function inviteUser(room_id, names) {
